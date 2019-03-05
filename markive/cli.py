@@ -20,19 +20,36 @@ MARKIVE_DIR = os.path.expanduser(
 def main():
     """Markive is a personal journal and archiving tool.
 
-    Create new journal entries using Markdown, save your progress, and visit them
-    later.
+    Create new journal entries using Markdown, save your progress, and edit
+    them later. Markive is fully extensible, with pre- and post-write hooks
+    defined in a config file.
     """
 
 
 @main.command()
-@click.option('--folder', type=click.Path(exists=False))
-def write(folder):
+@click.option('--folder',
+              type=click.Path(exists=False),
+              help="Markive folder, if not $MARKIVE_DIR")
+@click.option('--date',
+              type=str,
+              help="Date to create an entry for, in YYYY-MM-DD format (default now)")
+def write(folder, date):
     """Write in the current entry for the day.
+
+    Creates a folder named `<Month>-<Year>` in $MARKIVE_DIR, if it does
+    not exist. Entry filenames are saved by date with names of `<Mo>-<Day>.md`
+    by default.
+
+    Configuration is stored in $MARKIVE_DIR/config.yml by default.
     """
     folder = os.path.expanduser(folder) if folder else MARKIVE_DIR
+    if date:
+        date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    else:
+        date = datetime.datetime.now()
+
     config = util.read_config(folder)
-    file = util.get_current_entry(folder)
+    file = util.get_current_entry(folder, date)
     os.makedirs(os.path.dirname(file), exist_ok=True)
 
     # Create the hook commands
@@ -45,11 +62,10 @@ def write(folder):
         subprocess.call(pre_hook)
 
     # Writing a formatted template to the file first if it's empty.
-    with open(file, 'r+') as entry:
-        if not entry.read():
-            entry.seek(0)
+    if not os.path.exists(file):
+        with open(file, 'w') as entry:
             entry.write(
-                datetime.date.today().strftime(config['template'])
+                date.strftime(config['template'])
             )
     subprocess.call([EDITOR, file])
 

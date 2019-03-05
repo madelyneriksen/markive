@@ -7,7 +7,7 @@ import os
 import yaml
 
 
-def get_current_entry(markive_folder: str) -> str:
+def get_current_entry(markive_folder: str, date=None) -> str:
     """Get the current entry based on today's date.
 
     Arguments:
@@ -16,9 +16,9 @@ def get_current_entry(markive_folder: str) -> str:
     Returns:
         entry: Today's entry as a filepath.
     """
-    now = datetime.date.today()
-    month = os.path.join(markive_folder, now.strftime("%B-%Y"))
-    entry = os.path.join(month, now.strftime("%b-%d.md"))
+    date = date if date else datetime.datetime.now()
+    month = os.path.join(markive_folder, date.strftime("%B-%Y"))
+    entry = os.path.join(month, date.strftime("%b-%d.md"))
     return entry
 
 

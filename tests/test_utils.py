@@ -7,9 +7,9 @@ from markive import util
 
 def test_current_entry():
     """Test the current entry creation function."""
-    target_file = datetime.date.today().strftime("%b-%d.md")
-    actual_target = util.get_current_entry('./')
-    assert actual_target.endswith(target_file)
+    date = datetime.date(2017, 1, 31)
+    target = util.get_current_entry('./', date=date)
+    assert target.endswith('January-2017/Jan-31.md')
 
 
 def test_hooks_falsy_by_default():
