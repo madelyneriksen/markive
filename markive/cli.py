@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+import shlex
 import click
 
 from markive import util
@@ -28,7 +29,18 @@ def main():
 def write(folder):
     """Write in the current entry for the day.
     """
-    folder = folder if folder else MARKIVE_DIR
+    folder = os.path.expanduser(folder) if folder else MARKIVE_DIR
+    config = util.read_config(folder)
     file = util.get_current_entry(folder)
     os.makedirs(os.path.dirname(file), exist_ok=True)
+
+    # Create the hook commands
+    pre_hook = shlex.split(config['pre_write'])
+    post_hook = shlex.split(config['post_write'])
+
+    # Call all commands in sync
+    if pre_hook:
+        subprocess.call(pre_hook)
     subprocess.call([EDITOR, file])
+    if post_hook:
+        subprocess.call(post_hook)
