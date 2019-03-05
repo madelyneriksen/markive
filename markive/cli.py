@@ -2,6 +2,7 @@
 
 
 import os
+import datetime
 import subprocess
 import shlex
 import click
@@ -38,9 +39,21 @@ def write(folder):
     pre_hook = shlex.split(config['pre_write'])
     post_hook = shlex.split(config['post_write'])
 
-    # Call all commands in sync
+    # Pre write commands
     if pre_hook:
+        click.secho("Calling pre-write hook commands...", fg="blue")
         subprocess.call(pre_hook)
+
+    # Writing a formatted template to the file first if it's empty.
+    with open(file, 'r+') as entry:
+        if not entry.read():
+            entry.seek(0)
+            entry.write(
+                datetime.date.today().strftime(config['template'])
+            )
     subprocess.call([EDITOR, file])
+
+    # Post write commands
     if post_hook:
+        click.secho("Calling post-write hook commands...", fg="blue")
         subprocess.call(post_hook)
