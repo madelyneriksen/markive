@@ -53,13 +53,13 @@ def write(folder, date):
     os.makedirs(os.path.dirname(file), exist_ok=True)
 
     # Create the hook commands
-    pre_hook = shlex.split(config['pre_write'])
-    post_hook = shlex.split(config['post_write'])
+    pre_hook = config['pre_write']
+    post_hook = config['post_write']
 
     # Pre write commands
     if pre_hook:
         click.secho("Calling pre-write hook commands...", fg="blue")
-        subprocess.call(pre_hook)
+        subprocess.call(pre_hook, shell=True)
 
     # Writing a formatted template to the file first if it's empty.
     if not os.path.exists(file):
@@ -72,4 +72,4 @@ def write(folder, date):
     # Post write commands
     if post_hook:
         click.secho("Calling post-write hook commands...", fg="blue")
-        subprocess.call(post_hook)
+        subprocess.call(post_hook, shell=True)
