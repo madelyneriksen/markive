@@ -20,7 +20,8 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
     ],
     install_requires=[
-        "Click",
+        "Click>=7.0,<8.0",
+        "pyyaml>=3.0,<4.0",
     ],
     scripts=[
         'scripts/markive',
