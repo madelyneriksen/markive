@@ -41,5 +41,7 @@ def read_config(markive_folder: str) -> dict:
     config_file = os.path.join(markive_folder, "config.yml")
     if os.path.exists(config_file):
         with open(config_file, 'r') as file:
-            config.update(yaml.load(file.read()))
+            content = yaml.load(file.read())
+            if content:
+                config.update(content)
     return config

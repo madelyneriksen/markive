@@ -19,3 +19,10 @@ def test_hooks_falsy_by_default():
     config = util.read_config("some-nonexistant-path")
     assert not config["pre_write"]
     assert not config["post_write"]
+
+
+def test_blank_config_doesnt_crash(tmpdir):
+    """Test that an empty config.yml file will not crash the application."""
+    config = tmpdir.join("config.yml")
+    config.write('')
+    util.read_config(tmpdir)
