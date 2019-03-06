@@ -52,6 +52,9 @@ def write(folder, date):
     file = util.get_current_entry(folder, date)
     os.makedirs(os.path.dirname(file), exist_ok=True)
 
+    # CD into the directory with this process
+    os.chdir(folder)
+
     # Create the hook commands
     pre_hook = config['pre_write']
     post_hook = config['post_write']
