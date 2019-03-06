@@ -5,8 +5,8 @@ import datetime
 from markive import util
 
 
-def test_current_entry():
-    """Test the current entry creation function."""
+def test_custom_date_entry():
+    """Test the specific date entry creation function."""
     date = datetime.date(2017, 1, 31)
     target = util.get_current_entry('./', date=date)
     assert target.endswith('January-2017/Jan-31.md')
